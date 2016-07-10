@@ -5,11 +5,16 @@ import android.content.Context;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.os.Handler;
 import android.os.RemoteException;
+import android.support.annotation.IntDef;
 import android.util.Log;
+import android.widget.Toast;
+
 import com.google.android.gms.gcm.GcmNetworkManager;
 import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.TaskParams;
+import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 import com.sam_chordas.android.stockhawk.rest.Utils;
@@ -18,6 +23,8 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.net.URLEncoder;
 
 /**
@@ -112,7 +119,6 @@ public class StockTaskService extends GcmTaskService{
     if (urlStringBuilder != null){
       urlString = urlStringBuilder.toString();
       try{
-        // TODO: Handle the case when a stock quote was not valid
         getResponse = fetchData(urlString);
         result = GcmNetworkManager.RESULT_SUCCESS;
         try {
@@ -127,6 +133,11 @@ public class StockTaskService extends GcmTaskService{
               Utils.quoteJsonToContentVals(getResponse));
         }catch (RemoteException | OperationApplicationException e){
           Log.e(LOG_TAG, "Error applying batch insert", e);
+          if(e instanceof OperationApplicationException){
+            Log.e(LOG_TAG, "Can't add stock quote", e);
+            showToast();
+
+          }
         }
       } catch (IOException e){
         e.printStackTrace();
@@ -134,6 +145,18 @@ public class StockTaskService extends GcmTaskService{
     }
 
     return result;
+  }
+
+  private void showToast() {
+    Handler h = new Handler(mContext.getMainLooper());
+
+    h.post(new Runnable() {
+      @Override
+      public void run() {
+        Toast.makeText(mContext, R.string.error_adding_stock_quote_message,
+                Toast.LENGTH_SHORT).show();
+      }
+    });
   }
 
 }
