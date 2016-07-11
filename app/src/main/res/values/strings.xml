@@ -1,19 +1,17 @@
 <resources xmlns:xliff="http://schemas.android.com/tools">
-  <string name="app_name">Stock Hawk</string>
-
+  <string name="app_name" translatable="false">Stock Hawk</string>
   <string name="action_example">Example action</string>
-
   <string name="action_settings">Settings</string>
   <string name="action_change_units">Change Units</string>
   <string name="symbol_search">Symbol Search</string>
   <string name="content_test">Search for a Stock Symbol</string>
-  <string name="input_hint">FB</string>
+  <string name="input_hint" translatable="false">FB</string>
   <string name="input_prefill"></string>
   <string name="network_toast">Uh-oh! This app requires an internet connection</string>
   <string name="no_stock_information_available">No Stock information available</string>
   <string name="force_update">force update</string>
   <string name="error_adding_stock_quote_message">Can\'t add stock quote</string>
-  <string name="cancel">cancel</string>
+  <string name="cancel">Cancel</string>
   <string name="add_a_stock_quote">Add a stock quote button</string>
   <string name="bid_price_row">Bid price: <xliff:g id="bid_price">%1$s</xliff:g></string>
   <string name="symbol_row">stock symbol: <xliff:g id="price">%1$s</xliff:g></string>
