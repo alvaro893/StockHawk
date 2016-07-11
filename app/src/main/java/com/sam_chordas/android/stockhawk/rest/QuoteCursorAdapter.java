@@ -49,8 +49,12 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
     // makes every element to get focus when selected ( no touch )
     viewHolder.itemView.setSelected(cursor.getPosition() == selectedPos);
 
-    viewHolder.symbol.setText(cursor.getString(cursor.getColumnIndex("symbol")));
-    viewHolder.bidPrice.setText(cursor.getString(cursor.getColumnIndex("bid_price")));
+    String symbol = cursor.getString(cursor.getColumnIndex("symbol"));
+    viewHolder.symbol.setText(symbol);
+    viewHolder.symbol.setContentDescription(mContext.getString(R.string.symbol_row, symbol));
+    String bidPrice = cursor.getString(cursor.getColumnIndex("bid_price"));
+    viewHolder.bidPrice.setText(bidPrice);
+    viewHolder.bidPrice.setContentDescription(mContext.getString(R.string.bid_price_row, bidPrice));
     int sdk = Build.VERSION.SDK_INT;
     if (cursor.getInt(cursor.getColumnIndex("is_up")) == 1){
       if (sdk < Build.VERSION_CODES.JELLY_BEAN){
@@ -70,9 +74,13 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
       }
     }
     if (Utils.showPercent){
-      viewHolder.change.setText(cursor.getString(cursor.getColumnIndex("percent_change")));
+      String percentChange = cursor.getString(cursor.getColumnIndex("percent_change"));
+      viewHolder.change.setText(percentChange);
+      viewHolder.change.setContentDescription(mContext.getString(R.string.change_percent, percentChange));
     } else{
-      viewHolder.change.setText(cursor.getString(cursor.getColumnIndex("change")));
+      String change = cursor.getString(cursor.getColumnIndex("change"));
+      viewHolder.change.setText(change);
+      viewHolder.change.setContentDescription(mContext.getString(R.string.change, change));
     }
   }
 

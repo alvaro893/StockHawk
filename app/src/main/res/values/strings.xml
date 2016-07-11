@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="http://schemas.android.com/tools">
   <string name="app_name">Stock Hawk</string>
 
   <string name="action_example">Example action</string>
@@ -14,4 +14,9 @@
   <string name="force_update">force update</string>
   <string name="error_adding_stock_quote_message">Can\'t add stock quote</string>
   <string name="cancel">cancel</string>
+  <string name="add_a_stock_quote">Add a stock quote button</string>
+  <string name="bid_price_row">Bid price: <xliff:g id="bid_price">%1$s</xliff:g></string>
+  <string name="symbol_row">stock symbol: <xliff:g id="price">%1$s</xliff:g></string>
+  <string name="change_percent">change percent: <xliff:g id="change_percent">%1$s</xliff:g></string>
+  <string name="change">change: <xliff:g id="change">%1$s</xliff:g></string>
 </resources>

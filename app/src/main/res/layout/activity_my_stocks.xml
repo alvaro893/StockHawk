@@ -13,6 +13,7 @@
       android:gravity="center"
       android:textAppearance="?android:attr/textAppearanceLarge"
       android:text="@string/no_stock_information_available"
+      android:contentDescription="@string/no_stock_information_available"
       android:visibility="gone"/>
 
   <android.support.v7.widget.RecyclerView
@@ -35,5 +36,7 @@
       fab:fab_type="normal"
       fab:layout_anchor="recycler_view"
       fab:layout_anchorGravity="bottom | end"
+      android:contentDescription="@string/add_a_stock_quote"
+      android:focusable="true"
       />
 </FrameLayout>
