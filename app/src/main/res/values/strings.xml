@@ -17,4 +17,7 @@
   <string name="symbol_row">stock symbol: <xliff:g id="price">%1$s</xliff:g></string>
   <string name="change_percent">change percent: <xliff:g id="change_percent">%1$s</xliff:g></string>
   <string name="change">change: <xliff:g id="change">%1$s</xliff:g></string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="configure">Configure</string>
+    <string name="add_widget">Add widget</string>
 </resources>
