@@ -1,10 +1,7 @@
 package com.sam_chordas.android.stockhawk.ui;
 
-import android.app.LoaderManager;
 import android.content.Context;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.content.Loader;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -15,7 +12,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.InputType;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,7 +33,7 @@ import com.google.android.gms.gcm.Task;
 import com.melnykov.fab.FloatingActionButton;
 import com.sam_chordas.android.stockhawk.touch_helper.SimpleItemTouchHelperCallback;
 
-public class MyStocksActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+public class MyStocksActivity extends AppCompatActivity{
 
   /**
    * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -48,13 +44,9 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
    */
   private CharSequence mTitle;
   private Intent mServiceIntent;
-  private ItemTouchHelper mItemTouchHelper;
-  private static final int CURSOR_LOADER_ID = 0;
-  private QuoteCursorAdapter mCursorAdapter;
   private Context mContext;
-  private Cursor mCursor;
   boolean isConnected;
-  private RecyclerView recyclerView;
+  private StockListLoader mStockListLoader;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -64,21 +56,13 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     checkNetwork();
     runStockService(savedInstanceState);
 
-    recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-    recyclerView.setLayoutManager(new LinearLayoutManager(this));
-    getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
+    RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+    TextView textView = (TextView) findViewById(R.id.no_network_view);
 
-    mCursorAdapter = new QuoteCursorAdapter(this, null);
-
+    mStockListLoader = new StockListLoader(mContext, recyclerView, textView);
+    getLoaderManager().initLoader(StockListLoader.CURSOR_LOADER_ID, null, mStockListLoader);
     setItemClickRecicleView(recyclerView);
-
-    recyclerView.setAdapter(mCursorAdapter);
-
     setFab(recyclerView);
-
-    ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mCursorAdapter);
-    mItemTouchHelper = new ItemTouchHelper(callback);
-    mItemTouchHelper.attachToRecyclerView(recyclerView);
 
     mTitle = getTitle();
     setPeriodicTaskToGcm();
@@ -185,7 +169,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   @Override
   public void onResume() {
     super.onResume();
-    getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
+    getLoaderManager().restartLoader(StockListLoader.CURSOR_LOADER_ID, null, mStockListLoader);
   }
 
   public void networkToast(){
@@ -227,41 +211,11 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     if(id == R.id.action_force_update){
       checkNetwork();
       runStockService(null);
-      getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
+      getLoaderManager().initLoader(StockListLoader.CURSOR_LOADER_ID, null, mStockListLoader);
     }
 
     return super.onOptionsItemSelected(item);
   }
 
-  @Override
-  public Loader<Cursor> onCreateLoader(int id, Bundle args){
-    // This narrows the return to only the stocks that are most current.
-    return new CursorLoader(this, QuoteProvider.Quotes.CONTENT_URI,
-        new String[]{ QuoteColumns._ID, QuoteColumns.SYMBOL, QuoteColumns.BIDPRICE,
-            QuoteColumns.PERCENT_CHANGE, QuoteColumns.CHANGE, QuoteColumns.ISUP},
-        QuoteColumns.ISCURRENT + " = ?",
-        new String[]{"1"},
-        null);
-  }
-
-  @Override
-  public void onLoadFinished(Loader<Cursor> loader, Cursor data){
-    TextView textView = (TextView) findViewById(R.id.no_network_view);
-    mCursorAdapter.swapCursor(data);
-    mCursor = data;
-    boolean thereIsNoItems = mCursorAdapter.getItemCount() < 1;
-    if(thereIsNoItems){
-      textView.setVisibility(View.VISIBLE);
-      recyclerView.setVisibility(View.GONE);
-    }else{
-      textView.setVisibility(View.GONE);
-      recyclerView.setVisibility(View.VISIBLE);
-    }
-  }
-
-  @Override
-  public void onLoaderReset(Loader<Cursor> loader){
-    mCursorAdapter.swapCursor(null);
-  }
 
 }
