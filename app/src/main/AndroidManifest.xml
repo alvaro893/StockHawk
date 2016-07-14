@@ -62,7 +62,11 @@
 
         <service
             android:name=".widget.WidgetIntentService"
-            android:exported="false"></service>
+            android:exported="false" />
+
+        <activity android:name=".ui.DetailActivity" android:parentActivityName=".ui.MyStocksActivity">
+
+        </activity>
     </application>
 
 </manifest>
