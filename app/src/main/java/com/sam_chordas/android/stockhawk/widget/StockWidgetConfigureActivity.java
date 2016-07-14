@@ -6,32 +6,41 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.TextView;
 
 import com.sam_chordas.android.stockhawk.R;
+import com.sam_chordas.android.stockhawk.rest.RecyclerViewItemClickListener;
+import com.sam_chordas.android.stockhawk.ui.StockListLoader;
 
 
 /**
- * The configuration screen for the {@link StockWidget StockWidget} AppWidget.
+ * The configuration screen for the {@link StockWidgetProvider StockWidgetProvider} AppWidget.
  */
 public class StockWidgetConfigureActivity extends Activity {
 
-    private static final String PREFS_NAME = "com.sam_chordas.android.stockhawk.widget.StockWidget";
+    private static final String PREFS_NAME = "com.sam_chordas.android.stockhawk.widget.StockWidgetProvider";
     private static final String PREF_PREFIX_KEY = "appwidget_";
+    private static final int LOADER_ID = 0;
     int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
-    EditText mAppWidgetText;
-    View.OnClickListener mOnClickListener = new View.OnClickListener() {
-        public void onClick(View v) {
+    RecyclerView mAppWidgetList;
+
+
+    RecyclerViewItemClickListener.OnItemClickListener mOnItemClickListener =
+            new RecyclerViewItemClickListener.OnItemClickListener() {
+        @Override
+        public void onItemClick(View view, int position) {
             final Context context = StockWidgetConfigureActivity.this;
 
-            // When the button is clicked, store the string locally
-            String widgetText = mAppWidgetText.getText().toString();
-            saveTitlePref(context, mAppWidgetId, widgetText);
+            // When the button is clicked, store the item locally
+            TextView symbolView = (TextView) view.findViewById(R.id.stock_symbol);
+            String widgetSymbol = symbolView.getText().toString();
+            saveStockQuotePref(context, mAppWidgetId, widgetSymbol);
 
             // It is the responsibility of the configuration activity to update the app widget
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-            StockWidget.updateAppWidget(context, appWidgetManager, mAppWidgetId);
+            StockWidgetProvider.updateAppWidget(context);
 
             // Make sure we pass back the original appWidgetId
             Intent resultValue = new Intent();
@@ -46,7 +55,7 @@ public class StockWidgetConfigureActivity extends Activity {
     }
 
     // Write the prefix to the SharedPreferences object for this widget
-    static void saveTitlePref(Context context, int appWidgetId, String text) {
+    static void saveStockQuotePref(Context context, int appWidgetId, String text) {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
         prefs.putString(PREF_PREFIX_KEY + appWidgetId, text);
         prefs.apply();
@@ -54,7 +63,7 @@ public class StockWidgetConfigureActivity extends Activity {
 
     // Read the prefix from the SharedPreferences object for this widget.
     // If there is no preference saved, get the default from a resource
-    static String loadTitlePref(Context context, int appWidgetId) {
+    static String loadStockQuotePref(Context context, int appWidgetId) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, 0);
         String titleValue = prefs.getString(PREF_PREFIX_KEY + appWidgetId, null);
         if (titleValue != null) {
@@ -64,7 +73,7 @@ public class StockWidgetConfigureActivity extends Activity {
         }
     }
 
-    static void deleteTitlePref(Context context, int appWidgetId) {
+    static void deleteStockQuotePref(Context context, int appWidgetId) {
         SharedPreferences.Editor prefs = context.getSharedPreferences(PREFS_NAME, 0).edit();
         prefs.remove(PREF_PREFIX_KEY + appWidgetId);
         prefs.apply();
@@ -79,8 +88,12 @@ public class StockWidgetConfigureActivity extends Activity {
         setResult(RESULT_CANCELED);
 
         setContentView(R.layout.stock_widget_configure);
-        mAppWidgetText = (EditText) findViewById(R.id.appwidget_text);
-        findViewById(R.id.add_button).setOnClickListener(mOnClickListener);
+        mAppWidgetList = (RecyclerView) findViewById(R.id.stock_quotes_configure_widget);
+        StockListLoader stockListLoader = new StockListLoader(this, mAppWidgetList);
+        getLoaderManager().initLoader(LOADER_ID, null, stockListLoader);
+
+        mAppWidgetList.addOnItemTouchListener(
+                new RecyclerViewItemClickListener(this, mOnItemClickListener));
 
         // Find the widget id from the intent.
         Intent intent = getIntent();
@@ -95,8 +108,6 @@ public class StockWidgetConfigureActivity extends Activity {
             finish();
             return;
         }
-
-        mAppWidgetText.setText(loadTitlePref(StockWidgetConfigureActivity.this, mAppWidgetId));
     }
 }
 

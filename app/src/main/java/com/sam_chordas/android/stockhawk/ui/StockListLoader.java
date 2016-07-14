@@ -13,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
+import android.view.ViewParent;
 import android.widget.TextView;
 
 import com.sam_chordas.android.stockhawk.R;
@@ -47,6 +48,10 @@ public class StockListLoader implements LoaderManager.LoaderCallbacks<Cursor> {
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(mCursorAdapter);
         ItemTouchHelper mItemTouchHelper = new ItemTouchHelper(callback);
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
+    }
+
+    public StockListLoader(Context mContext, RecyclerView mRecyclerView) {
+        this(mContext, mRecyclerView, new TextView(mContext));
     }
 
     @Override

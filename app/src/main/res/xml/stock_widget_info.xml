@@ -4,8 +4,8 @@
     android:initialKeyguardLayout="@layout/stock_widget"
     android:initialLayout="@layout/stock_widget"
     android:minHeight="40dp"
-    android:minWidth="110dp"
-    android:previewImage="@drawable/example_appwidget_preview"
+    android:minWidth="180dp"
+    android:previewImage="@drawable/widget_preview"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="8640"
-    android:widgetCategory="home_screen"></appwidget-provider>
+    android:widgetCategory="home_screen"/>

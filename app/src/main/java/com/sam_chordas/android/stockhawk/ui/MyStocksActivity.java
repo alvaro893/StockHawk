@@ -98,6 +98,9 @@ public class MyStocksActivity extends AppCompatActivity{
               @Override public void onItemClick(View v, int position) {
                 //TODO:
                 // do something on item click
+                TextView textView = (TextView) v.findViewById(R.id.stock_symbol);
+                String s = textView.getText().toString();
+                Toast.makeText(MyStocksActivity.this, s+ " "+position, Toast.LENGTH_SHORT).show();
               }
             }));
   }
