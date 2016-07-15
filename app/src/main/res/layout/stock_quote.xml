@@ -11,6 +11,7 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
         >
         <TextView
             android:id="@+id/stock_symbol"
