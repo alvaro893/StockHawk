@@ -103,6 +103,7 @@ public class MyStocksActivity extends AppCompatActivity{
                 startActivity(intent);
               }
             }));
+
   }
 
   private void setFab(RecyclerView recyclerView) {

@@ -20,6 +20,7 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         mContext = this;
+
         mStockSymbol = getIntent().getExtras().getString(STOCK_SYMBOL_ARG);
         mTitle = mStockSymbol;
         restoreActionBar();

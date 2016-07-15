@@ -17,6 +17,9 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 
@@ -26,7 +29,8 @@ import java.util.ArrayList;
  * TODO: Create JavaDoc
  */
 public class ChartConfig implements LoaderManager.LoaderCallbacks<Cursor> {
-    private static final int COLOR = Color.WHITE;
+    private static final int TEXT_COLOR = Color.WHITE;
+    private static final int COLOR_HIGHLIGHT = Color.GREEN;
     private static final String SELECTION = QuoteColumns.SYMBOL + "= ?";
     private final static String[] STOCK_COLUMNS = {
             QuoteColumns.SYMBOL,
@@ -35,28 +39,33 @@ public class ChartConfig implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final int INDEX_BID_PRICE = 1;
     private static final String STOCK_PRICES = "Stock prices";
     public static final int LOADER_ID = 0;
+    private static final float TEXT_SIZE = 15f;
+
 
     private final Context mContext;
     private final LineChart mChart;
     private String mStockSymbol;
     private ArrayList<Entry> dataEntries;
+    private String mDescription;
 
     public ChartConfig(Context context, LineChart chart, String stockSymbol) {
         this.mContext = context;
         this.mStockSymbol = stockSymbol;
         this.mChart = chart;
         this.dataEntries = new ArrayList<>();
+        this.mDescription = "0";
 
         configureAxis(mChart);
     }
 
     private void configureAxis(LineChart chart) {
-        chart.setDescriptionColor(COLOR);
-        chart.setDescription("test");
+        chart.setDescription(mDescription);
+        chart.setDescriptionColor(TEXT_COLOR);
+        chart.setDescriptionTextSize(TEXT_SIZE);
+
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setTextSize(10f);
-        xAxis.setTextColor(COLOR);
+        xAxis.setEnabled(false);
         xAxis.setDrawAxisLine(true);
         xAxis.setDrawGridLines(false);
 
@@ -64,8 +73,8 @@ public class ChartConfig implements LoaderManager.LoaderCallbacks<Cursor> {
         yAxisRight.setEnabled(false);
 
         YAxis yAxis = chart.getAxis(YAxis.AxisDependency.LEFT);
-        yAxis.setTextSize(15f);
-        yAxis.setTextColor(COLOR);
+        yAxis.setTextSize(TEXT_SIZE);
+        yAxis.setTextColor(TEXT_COLOR);
         yAxis.setDrawGridLines(false);
     }
 
@@ -85,15 +94,31 @@ public class ChartConfig implements LoaderManager.LoaderCallbacks<Cursor> {
             count++;
         }
         LineDataSet lineDataSet = new LineDataSet(dataEntries, STOCK_PRICES);
-        lineDataSet.setValueTextColor(COLOR);
+
+        lineDataSet.setValueTextColor(TEXT_COLOR);
+        lineDataSet.setDrawValues(false);
 
         LineData lineData = new LineData(lineDataSet);
+        lineDataSet.setHighLightColor(COLOR_HIGHLIGHT);
+
         mChart.setData(lineData);
+        mChart.setAutoScaleMinMaxEnabled(true);
         mChart.invalidate(); // refresh
+        mChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                float bidPrice = e.getY();
+                mChart.setDescription(mContext.getString(R.string.price) + bidPrice);
+            }
+
+            @Override
+            public void onNothingSelected() {
+            }
+        });
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+    public void onLoaderReset(Loader<Cursor> loader) {}
 
-    }
+
 }
