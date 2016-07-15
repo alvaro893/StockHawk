@@ -10,6 +10,7 @@ import com.sam_chordas.android.stockhawk.R;
 
 public class DetailActivity extends AppCompatActivity {
 
+    public static final String STOCK_SYMBOL_ARG = "symbol";
     private String mTitle;
     private String mStockSymbol;
     private Context mContext;
@@ -18,15 +19,14 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        mTitle = "Details";
-        mStockSymbol = ""; //TODO:
+        mContext = this;
+        mStockSymbol = getIntent().getExtras().getString(STOCK_SYMBOL_ARG);
+        mTitle = mStockSymbol;
         restoreActionBar();
 
         LineChart chart = (LineChart) findViewById(R.id.chart);
         ChartConfig chartConfig = new ChartConfig(mContext, chart, mStockSymbol);
         getSupportLoaderManager().initLoader(ChartConfig.LOADER_ID, null, chartConfig);
-
-
     }
 
     public void restoreActionBar() {
