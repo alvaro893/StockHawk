@@ -29,6 +29,7 @@ import java.util.ArrayList;
  * TODO: Create JavaDoc
  */
 public class ChartConfig implements LoaderManager.LoaderCallbacks<Cursor> {
+    public static final int LOADER_ID = 0;
     private static final int TEXT_COLOR = Color.WHITE;
     private static final int COLOR_HIGHLIGHT = Color.GREEN;
     private static final String SELECTION = QuoteColumns.SYMBOL + "= ?";
@@ -38,12 +39,10 @@ public class ChartConfig implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final int INDEX_SYMBOL = 0;
     private static final int INDEX_BID_PRICE = 1;
     private static final String STOCK_PRICES = "Stock prices";
-    public static final int LOADER_ID = 0;
     private static final float TEXT_SIZE = 15f;
-
-
     private final Context mContext;
     private final LineChart mChart;
+    private int mFillColor = Color.argb(150, 51, 181, 229);
     private String mStockSymbol;
     private ArrayList<Entry> dataEntries;
     private String mDescription;
@@ -53,20 +52,21 @@ public class ChartConfig implements LoaderManager.LoaderCallbacks<Cursor> {
         this.mStockSymbol = stockSymbol;
         this.mChart = chart;
         this.dataEntries = new ArrayList<>();
-        this.mDescription = "0";
+        this.mDescription = "";
 
+        configureChart(mChart);
         configureAxis(mChart);
     }
 
-    private void configureAxis(LineChart chart) {
-        chart.setDescription(mDescription);
-        chart.setDescriptionColor(TEXT_COLOR);
-        chart.setDescriptionTextSize(TEXT_SIZE);
+    private void configureChart(LineChart mChart) {
+        mChart.setDescription(mDescription);
+        mChart.setDescriptionColor(TEXT_COLOR);
+        mChart.setDescriptionTextSize(TEXT_SIZE);
+    }
 
+    private void configureAxis(LineChart chart) {
         XAxis xAxis = chart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setEnabled(false);
-        xAxis.setDrawAxisLine(true);
         xAxis.setDrawGridLines(false);
 
         YAxis yAxisRight = chart.getAxis(YAxis.AxisDependency.RIGHT);
@@ -76,6 +76,34 @@ public class ChartConfig implements LoaderManager.LoaderCallbacks<Cursor> {
         yAxis.setTextSize(TEXT_SIZE);
         yAxis.setTextColor(TEXT_COLOR);
         yAxis.setDrawGridLines(false);
+    }
+    private void addDataToChart(ArrayList<Entry> dataEntries) {
+        LineDataSet set = new LineDataSet(dataEntries, STOCK_PRICES);
+
+        set.setValueTextColor(TEXT_COLOR);
+        set.setDrawValues(false);
+        set.setColor(TEXT_COLOR);
+        set.setDrawFilled(true);
+        set.setFillColor(mFillColor);
+        set.setHighLightColor(COLOR_HIGHLIGHT);
+
+
+        mChart.setData(new LineData(set));
+        mChart.invalidate(); // refresh
+
+        // select callbacks
+        mChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                float bidPrice = e.getY();
+                mChart.setDescription(mContext.getString(R.string.price, bidPrice));
+            }
+
+            @Override
+            public void onNothingSelected() {
+                mChart.setDescription(mContext.getString(R.string.price, 0f));
+            }
+        });
     }
 
     @Override
@@ -93,28 +121,7 @@ public class ChartConfig implements LoaderManager.LoaderCallbacks<Cursor> {
             dataEntries.add(new Entry(count, bidPrice));
             count++;
         }
-        LineDataSet lineDataSet = new LineDataSet(dataEntries, STOCK_PRICES);
-
-        lineDataSet.setValueTextColor(TEXT_COLOR);
-        lineDataSet.setDrawValues(false);
-
-        LineData lineData = new LineData(lineDataSet);
-        lineDataSet.setHighLightColor(COLOR_HIGHLIGHT);
-
-        mChart.setData(lineData);
-        mChart.setAutoScaleMinMaxEnabled(true);
-        mChart.invalidate(); // refresh
-        mChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
-            @Override
-            public void onValueSelected(Entry e, Highlight h) {
-                float bidPrice = e.getY();
-                mChart.setDescription(mContext.getString(R.string.price) + bidPrice);
-            }
-
-            @Override
-            public void onNothingSelected() {
-            }
-        });
+        addDataToChart(dataEntries);
     }
 
     @Override
