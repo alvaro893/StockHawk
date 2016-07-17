@@ -26,7 +26,7 @@ import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 import java.util.ArrayList;
 
 /*
- * TODO: Create JavaDoc
+ * Configures the chart for the price stock
  */
 public class ChartConfig implements LoaderManager.LoaderCallbacks<Cursor> {
     public static final int LOADER_ID = 0;

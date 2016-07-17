@@ -13,17 +13,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
-import android.view.ViewParent;
 import android.widget.TextView;
 
-import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 import com.sam_chordas.android.stockhawk.rest.QuoteCursorAdapter;
 import com.sam_chordas.android.stockhawk.touch_helper.SimpleItemTouchHelperCallback;
 
 /*
- * TODO: Create JavaDoc
+ * Activity that will show a chart price history for a chosen stock quote
  */
 public class StockListLoader implements LoaderManager.LoaderCallbacks<Cursor> {
     public static final int CURSOR_LOADER_ID = 0;

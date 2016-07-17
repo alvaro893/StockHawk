@@ -22,4 +22,5 @@
     <string name="add_widget">Add widget</string>
   <string name="stock_price_chart">stock price chart</string>
   <string name="price">"price "<xliff:g id="price">%1$.2f</xliff:g></string>
+  <string name="stock_already_saved_warning">This stock is already saved!</string>
 </resources>

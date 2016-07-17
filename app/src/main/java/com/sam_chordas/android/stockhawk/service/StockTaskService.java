@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.os.Handler;
 import android.os.RemoteException;
-import android.support.annotation.IntDef;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -24,8 +23,6 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.net.URLEncoder;
 
 /**

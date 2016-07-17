@@ -96,8 +96,6 @@ public class WidgetIntentService extends IntentService {
                 views.setInt(R.id.change, "setBackgroundResource", R.drawable.percent_change_pill_red);
             }
 
-            // TODO: set pill background
-
             // Instruct the widget manager to update the widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }
